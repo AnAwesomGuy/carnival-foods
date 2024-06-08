@@ -1,0 +1,32 @@
+{
+	"schemaVersion": 1,
+	"id": "carnival-foods",
+	"version": "${version}",
+	"name": "${display_name}",
+	"description": "Adds foods from carnivals! Made for ModFest: Carnival.",
+	"authors": [
+		"AnAwesomGuy"
+	],
+	"contact": {
+		"homepage": "http://modrinth.com/mod/${modrinth_id}",
+		"sources": "${github_repo}",
+		"issues": "${github_repo}/issues"
+	},
+	"license": "Apache-2.0",
+	"icon": "assets/carnival-foods/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"net.anawesomguy.carnivalfoods.CarnivalFoods"
+		]
+	},
+	"mixins": [
+		"carnival-foods.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.15",
+		"minecraft": "~1.21",
+		"java": ">=21",
+		"fabric-api": "*"
+	}
+}
