@@ -1,0 +1,19 @@
+{
+	"credit": "Made with Blockbench",
+	"parent": "carnival-foods:item/cotton_candy_held",
+	"elements": [
+		{
+			"from": [2.5, 12, -1.5],
+			"to": [13.5, 23, 9.5],
+			"rotation": {"angle": 22.5, "axis": "x", "origin": [0, 0, 0]},
+			"faces": {
+				"north": {"uv": [8, 0, 9, 1], "texture": "#0", "tintindex": 0},
+				"east": {"uv": [8, 0, 9, 1], "texture": "#0", "tintindex": 0},
+				"south": {"uv": [8, 0, 9, 1], "texture": "#0", "tintindex": 0},
+				"west": {"uv": [8, 0, 9, 1], "texture": "#0", "tintindex": 0},
+				"up": {"uv": [8, 0, 9, 1], "texture": "#0", "tintindex": 0},
+				"down": {"uv": [8, 0, 9, 1], "texture": "#0", "tintindex": 0}
+			}
+		}
+	]
+}

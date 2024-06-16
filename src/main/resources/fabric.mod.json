@@ -18,6 +18,9 @@
 	"entrypoints": {
 		"main": [
 			"net.anawesomguy.carnivalfoods.CarnivalFoods"
+		],
+		"client": [
+			"net.anawesomguy.carnivalfoods.client.CarnivalFoodsClient"
 		]
 	},
 	"mixins": [
@@ -28,5 +31,6 @@
 		"minecraft": ">1.20.6",
 		"java": ">=21",
 		"fabric-api": "*"
-	}
+	},
+	"accessWidener" : "carnival-foods.accesswidener"
 }

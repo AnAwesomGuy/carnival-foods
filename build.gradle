@@ -6,7 +6,7 @@ version = project.mod_version
 group = project.maven_group
 
 base {
-	archivesName = project.archives_base_name
+	archivesName = project.mod_id
 }
 
 repositories {
@@ -45,8 +45,11 @@ processResources {
 
 	doLast {
 		fileTree(dir: outputs.files.asPath).each {
-			if (it.name.endsWith(".json"))
+			if (it.name.endsWith(".json")) {
+				def parsed = new JsonSlurper().parse(it)
+				parsed.remove "credits"
 				it.text = JsonOutput.toJson(new JsonSlurper().parse(it))
+			}
 		}
 	}
 }
@@ -70,6 +73,15 @@ jar {
 }
 
 loom {
+//	splitEnvironmentSourceSets()
+//
+//	mods {
+//		"${project.mod_id}" {
+//			sourceSet sourceSets.main
+//			sourceSet sourceSets.client
+//		}
+//	}
+
     mixin {
         useLegacyMixinAp = false
     }
@@ -91,4 +103,6 @@ loom {
 			property 'mixin.debug', 'true'
 		}
 	}
+
+	accessWidenerPath = file("src/main/resources/${mod_id}.accesswidener")
 }

@@ -1,0 +1,77 @@
+{
+	"credit": "Made with Blockbench",
+	"textures": {
+		"0": "carnival-foods:item/cotton_candy_held",
+		"particle": "carnival-foods:item/cotton_candy_held"
+	},
+	"elements": [
+		{
+			"from": [7, 1, 3.5],
+			"to": [9, 17, 5.5],
+			"rotation": {"angle": 22.5, "axis": "x", "origin": [0, 0, 0]},
+			"faces": {
+				"north": {"uv": [6, 0, 4, 16], "texture": "#0"},
+				"east": {"uv": [6, 0, 8, 16], "texture": "#0"},
+				"south": {"uv": [2, 0, 4, 16], "texture": "#0"},
+				"west": {"uv": [2, 16, 0, 0], "texture": "#0"},
+				"up": {"uv": [8, 3, 10, 1], "texture": "#0"},
+				"down": {"uv": [8, 5, 10, 3], "texture": "#0"}
+			}
+		}
+	],
+	"display": {
+		"thirdperson_righthand": {
+			"translation": [0, 1, 3.2],
+			"scale": [0.8, 0.8, 0.8]
+		},
+		"thirdperson_lefthand": {
+			"translation": [0, 1, 3.2],
+			"scale": [0.8, 0.8, 0.8]
+		},
+		"firstperson_righthand": {
+			"rotation": [9, 0, 0],
+			"translation": [-0.5, 0, 0],
+			"scale": [0.8, 0.8, 0.8]
+		},
+		"firstperson_lefthand": {
+			"rotation": [9, 0, 0],
+			"translation": [-0.5, 0, 0],
+			"scale": [0.8, 0.8, 0.8]
+		},
+		"ground": {
+			"translation": [0, -1, 0]
+		},
+		"gui": {
+			"rotation": [0, 135, 0],
+			"translation": [0, -2, 0],
+			"scale": [0.8, 0.8, 0.8]
+		},
+		"head": {
+			"translation": [0, 8, 0]
+		},
+		"fixed": {
+			"rotation": [-9, -180, 0],
+			"translation": [0, 0, -4.5]
+		}
+	},
+	"overrides": [
+		{
+			"predicate": {
+				"carnival-foods:size": 1
+			},
+			"model": "carnival-foods:item/cotton_candy_small"
+		},
+		{
+			"predicate": {
+				"carnival-foods:size": 0.5
+			},
+			"model": "carnival-foods:item/cotton_candy_medium"
+		},
+		{
+			"predicate": {
+				"carnival-foods:size": 0
+			},
+			"model": "carnival-foods:item/cotton_candy_large"
+		}
+	]
+}
