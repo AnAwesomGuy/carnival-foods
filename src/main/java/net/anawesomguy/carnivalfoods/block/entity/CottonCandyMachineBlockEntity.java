@@ -1,20 +1,22 @@
 package net.anawesomguy.carnivalfoods.block.entity;
 
 import net.anawesomguy.carnivalfoods.CarnivalFoods;
-import net.fabricmc.fabric.api.transfer.v1.item.InventoryStorage;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.component.ComponentMap;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.DyedColorComponent;
+import net.minecraft.inventory.Inventories;
 import net.minecraft.item.DyeItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ColorHelper.Argb;
-import net.minecraft.util.math.MathHelper;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -27,7 +29,6 @@ public class CottonCandyMachineBlockEntity extends BlockEntity implements BasicI
 
     protected final DefaultedList<ItemStack> items = DefaultedList.ofSize(17, ItemStack.EMPTY); // 0-15 is dyes, 16 is sugar
 
-    public final InventoryStorage inventoryWrapper = InventoryStorage.of(this, null);
 
     public CottonCandyMachineBlockEntity(BlockPos pos, BlockState state) {
         super(TYPE, pos, state);
@@ -47,6 +48,22 @@ public class CottonCandyMachineBlockEntity extends BlockEntity implements BasicI
     public boolean isValid(int slot, ItemStack stack) {
         Item item = stack.getItem();
         return item instanceof DyeItem || (item == Items.SUGAR && slot == 16);
+    }
+
+    @Override
+    protected void readNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
+        super.readNbt(nbt, registryLookup);
+        Inventories.readNbt(nbt, items, registryLookup);
+    }
+
+    @Override
+    protected void writeNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
+        super.writeNbt(nbt, registryLookup);
+        Inventories.writeNbt(nbt, items, registryLookup);
+    }
+
+    @Override protected void addComponents(ComponentMap.Builder componentMapBuilder) {
+        super.addComponents(componentMapBuilder);
     }
 
     @Nullable
@@ -79,14 +96,14 @@ public class CottonCandyMachineBlockEntity extends BlockEntity implements BasicI
         green = (int)((float)green * f / g);
         blue = (int)((float)blue * f / g);
         stack = stack.copyComponentsToNewStack(CarnivalFoods.COTTON_CANDY, 1);
-        stack.setDamage(3 - MathHelper.clamp(sugars, 1, 3));
+        stack.setDamage(3 - Math.clamp(sugars, 1, 3));
         stack.set(DataComponentTypes.DYED_COLOR, new DyedColorComponent(Argb.getArgb(red, green, blue), false));
         return stack;
     }
 
     private ItemStack setCottonCandy(ItemStack stack, int sugars) {
         stack = stack.copyComponentsToNewStack(CarnivalFoods.COTTON_CANDY, 1);
-        stack.setDamage(3 - MathHelper.clamp(sugars, 1, 3));
+        stack.setDamage(3 - Math.clamp(sugars, 1, 3));
         return stack;
     }
 }

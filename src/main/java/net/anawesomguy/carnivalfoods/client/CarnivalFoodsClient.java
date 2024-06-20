@@ -9,7 +9,6 @@ import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.minecraft.client.item.ModelPredicateProviderRegistry;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactories;
-import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.DyedColorComponent;
 import net.minecraft.item.Item;
@@ -22,11 +21,10 @@ import java.util.Objects;
 import java.util.WeakHashMap;
 
 public final class CarnivalFoodsClient implements ClientModInitializer {
-    private static final Map<Item, ModelIdentifier> HELD_ITEMS_PRIVATE = new WeakHashMap<>();
-    public static final Map<Item, ModelIdentifier> HELD_ITEM_MODELS = Collections.unmodifiableMap(HELD_ITEMS_PRIVATE);
-    public static final Identifier COTTON_CANDY_HELD = CarnivalFoods.id("item/cotton_candy_held");
+    private static final Map<Item, Identifier> HELD_ITEMS_PRIVATE = new WeakHashMap<>();
+    public static final Map<Item, Identifier> HELD_ITEM_MODELS = Collections.unmodifiableMap(HELD_ITEMS_PRIVATE);
 
-    public static void addHeldItemModel(Item item, ModelIdentifier modelIdentifier) {
+    public static void addHeldItemModel(Item item, Identifier modelIdentifier) {
         HELD_ITEMS_PRIVATE.put(Objects.requireNonNull(item), modelIdentifier);
     }
 
@@ -41,10 +39,10 @@ public final class CarnivalFoodsClient implements ClientModInitializer {
                 return ColorHelper.Argb.withAlpha(99, color.rgb());
             return -1;
         }, CarnivalFoods.COTTON_CANDY);
-        ModelLoadingPlugin.register(pluginContext -> pluginContext.addModels(COTTON_CANDY_HELD));
+        ModelLoadingPlugin.register(pluginContext -> pluginContext.addModels(HELD_ITEMS_PRIVATE.values()));
     }
 
     static {
-        addHeldItemModel(CarnivalFoods.COTTON_CANDY, ModelIdentifier.ofInventoryVariant(COTTON_CANDY_HELD));
+        addHeldItemModel(CarnivalFoods.COTTON_CANDY, CarnivalFoods.id("item/cotton_candy_held"));
     }
 }
