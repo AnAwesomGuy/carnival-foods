@@ -25,7 +25,7 @@ import java.util.Set;
 
 public class CottonCandyMachineBlockEntity extends BlockEntity implements BasicInventory {
     public static final BlockEntityType<CottonCandyMachineBlockEntity> TYPE =
-        new BlockEntityType<>(CottonCandyMachineBlockEntity::new, Set.of(), null);
+        new BlockEntityType<>(CottonCandyMachineBlockEntity::new, Set.of(CarnivalFoods.COTTON_CANDY_MACHINE), null);
 
     protected final DefaultedList<ItemStack> items = DefaultedList.ofSize(17, ItemStack.EMPTY); // 0-15 is dyes, 16 is sugar
 

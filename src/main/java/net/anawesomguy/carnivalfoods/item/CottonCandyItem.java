@@ -1,6 +1,5 @@
 package net.anawesomguy.carnivalfoods.item;
 
-import net.anawesomguy.carnivalfoods.block.CottonCandyMachineBlock;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;

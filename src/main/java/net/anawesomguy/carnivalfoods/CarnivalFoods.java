@@ -7,7 +7,6 @@ import net.fabricmc.api.ModInitializer;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.MapColor;
-import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.component.type.FoodComponent;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
@@ -19,11 +18,6 @@ import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Collections;
-import java.util.Map;
-import java.util.Objects;
-import java.util.WeakHashMap;
 
 public final class CarnivalFoods implements ModInitializer {
     public static final String MOD_ID = "carnival-foods";

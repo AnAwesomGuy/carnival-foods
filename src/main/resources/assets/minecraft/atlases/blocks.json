@@ -1,0 +1,8 @@
+{
+  "sources": [
+    {
+      "type": "single",
+      "resource": "carnival-foods:entity/cotton_candy_machine"
+    }
+  ]
+}
