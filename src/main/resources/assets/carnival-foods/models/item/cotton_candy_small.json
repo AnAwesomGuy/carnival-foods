@@ -1,6 +1,7 @@
 {
 	"credit": "Made with Blockbench",
 	"parent": "carnival-foods:item/cotton_candy_held",
+	"inherit_elements": true,
 	"elements": [
 		{
 			"from": [4.5, 12.5, 0.5],

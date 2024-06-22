@@ -23,6 +23,7 @@ import java.util.WeakHashMap;
 public final class CarnivalFoodsClient implements ClientModInitializer {
     private static final Map<Item, Identifier> HELD_ITEMS_PRIVATE = new WeakHashMap<>();
     public static final Map<Item, Identifier> HELD_ITEM_MODELS = Collections.unmodifiableMap(HELD_ITEMS_PRIVATE);
+    public static final Identifier COTTON_CANDY_HELD = CarnivalFoods.id("item/cotton_candy_held");
 
     public static void addHeldItemModel(Item item, Identifier modelIdentifier) {
         HELD_ITEMS_PRIVATE.put(Objects.requireNonNull(item), modelIdentifier);
@@ -36,13 +37,13 @@ public final class CarnivalFoodsClient implements ClientModInitializer {
         ColorProviderRegistry.ITEM.register((stack, tintIndex) -> {
             DyedColorComponent color;
             if (tintIndex == 1 && (color = stack.get(DataComponentTypes.DYED_COLOR)) != null)
-                return ColorHelper.Argb.withAlpha(99, color.rgb());
+                return ColorHelper.Argb.fullAlpha(color.rgb());
             return -1;
         }, CarnivalFoods.COTTON_CANDY);
         ModelLoadingPlugin.register(pluginContext -> pluginContext.addModels(HELD_ITEMS_PRIVATE.values()));
     }
 
     static {
-        addHeldItemModel(CarnivalFoods.COTTON_CANDY, CarnivalFoods.id("item/cotton_candy_held"));
+        addHeldItemModel(CarnivalFoods.COTTON_CANDY, COTTON_CANDY_HELD);
     }
 }
