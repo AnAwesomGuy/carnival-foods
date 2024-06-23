@@ -2,6 +2,6 @@
   "parent": "item/generated",
   "textures": {
     "layer0": "item/stick",
-    "layer1": "item/wooden_shovel"
+    "layer1": "carnival-foods:item/cotton_candy"
   }
 }

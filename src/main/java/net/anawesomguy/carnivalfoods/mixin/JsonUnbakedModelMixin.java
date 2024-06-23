@@ -1,10 +1,11 @@
 package net.anawesomguy.carnivalfoods.mixin;
 
 import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import com.llamalad7.mixinextras.sugar.Local;
+import net.anawesomguy.carnivalfoods.internal.JsonUnbakedModelExtensions;
 import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.client.render.model.json.JsonUnbakedModel;
 import net.minecraft.client.render.model.json.ModelElement;
@@ -25,7 +26,7 @@ import java.util.List;
 import java.util.function.Function;
 
 @Mixin(JsonUnbakedModel.class)
-public abstract class JsonUnbakedModelMixin implements UnbakedModel {
+public abstract class JsonUnbakedModelMixin implements JsonUnbakedModelExtensions {
     @Shadow @Final
     private List<ModelElement> elements;
     @Unique
@@ -39,17 +40,29 @@ public abstract class JsonUnbakedModelMixin implements UnbakedModel {
     ) // targets right before the for loop loops over, after `parent` is set
     private void addInheritedElements(Function<Identifier, UnbakedModel> modelLoader, CallbackInfo ci, @Local JsonUnbakedModel jsonModel, @Local UnbakedModel unbakedModel) {
         JsonUnbakedModelMixin jsonModelMixin = (JsonUnbakedModelMixin)(Object)jsonModel;
-        if (jsonModelMixin.inheritElements && !jsonModelMixin.elements.isEmpty())
-            jsonModelMixin.elements.addAll(((JsonUnbakedModel)unbakedModel).getElements());
+
+        if (jsonModelMixin.inheritElements && !jsonModelMixin.elements.isEmpty()) {
+            List<ModelElement> parentElements = ((JsonUnbakedModel)unbakedModel).getElements();
+            int parentSize = parentElements.size();
+            if (parentSize == 1)
+                jsonModelMixin.elements.add(parentElements.getFirst());
+            else if (parentSize > 1)
+                jsonModelMixin.elements.addAll(((JsonUnbakedModel)unbakedModel).getElements());
+        }
+    }
+
+    @Override
+    public void carnival_foods$setInherit(boolean inheritElements) {
+        this.inheritElements = inheritElements;
     }
 
     @Mixin(JsonUnbakedModel.Deserializer.class)
-    public static abstract class DeserializerMixin implements JsonDeserializer<JsonUnbakedModel> {
-        @SuppressWarnings("ReferenceToMixin") // it's in a mixin
+    public static abstract class DeserializerMixin {
         @Inject(method = "deserialize(Lcom/google/gson/JsonElement;Ljava/lang/reflect/Type;Lcom/google/gson/JsonDeserializationContext;)Lnet/minecraft/client/render/model/json/JsonUnbakedModel;", at = @At("RETURN"))
         private void setInheritElements(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext, CallbackInfoReturnable<JsonUnbakedModel> cir) {
-            ((JsonUnbakedModelMixin)(Object)cir.getReturnValue()).inheritElements =
-                ((JsonObject)jsonElement).getAsJsonPrimitive("inherit_elements").getAsBoolean();
+            JsonPrimitive inherit = ((JsonObject)jsonElement).getAsJsonPrimitive("inherit_elements");
+            if (inherit != null)
+                ((JsonUnbakedModelExtensions)cir.getReturnValue()).carnival_foods$setInherit(inherit.getAsBoolean());
         }
     }
 }

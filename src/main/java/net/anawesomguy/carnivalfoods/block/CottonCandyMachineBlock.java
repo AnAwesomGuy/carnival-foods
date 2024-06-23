@@ -26,10 +26,10 @@ public class CottonCandyMachineBlock extends BlockWithEntity {
 
     protected static final VoxelShape SHAPE = VoxelShapes.union(
         createCuboidShape(1,    1,   1,    15,   2,   15), // base
-        createCuboidShape(2,    0,   2,    4,    2,   4), // feet
-        createCuboidShape(2,    0,   12,   4,    2,   14),
-        createCuboidShape(12,   0,   2,    14,   2,   4),
-        createCuboidShape(12,   0,   12,   14,   2,   14),
+        createCuboidShape(2,    0,   2,    4,    1,   4), // feet
+        createCuboidShape(2,    0,   12,   4,    1,   14),
+        createCuboidShape(12,   0,   2,    14,   1,   4),
+        createCuboidShape(12,   0,   12,   14,   1,   14),
         createCuboidShape(0.8,  1,   1,    1.8,  3.5, 15), // outer lower
         createCuboidShape(14.2, 1,   1,    15.2, 3.5, 15),
         createCuboidShape(1,    1,   0.8,  15,   3.5, 1.8),
