@@ -2,7 +2,7 @@
 	"credit": "Made with Blockbench",
 	"textures": {
 		"0": "carnival-foods:item/cotton_candy_held",
-		"particle": "carnival-foods:item/cotton_candy_held"
+		"particle": "#0"
 	},
 	"elements": [
 		{

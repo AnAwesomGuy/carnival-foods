@@ -6,11 +6,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.UseAction;
 import net.minecraft.world.World;
 
 import static net.anawesomguy.carnivalfoods.block.CottonCandyMachineBlock.START_SPIN_TIME;
-import static net.anawesomguy.carnivalfoods.block.CottonCandyMachineBlock.TIME_TO_MAKE_ONE_LAYER;
+import static net.anawesomguy.carnivalfoods.block.CottonCandyMachineBlock.TIME_FOR_ONE_LAYER;
 
 public class CottonCandyItem extends Item {
     public CottonCandyItem(Settings settings) {
@@ -18,16 +17,11 @@ public class CottonCandyItem extends Item {
     }
 
     @Override
-    public UseAction getUseAction(ItemStack stack) {
-        return UseAction.CROSSBOW;
-    }
-
-    @Override
     public ItemStack finishUsing(ItemStack stack, World world, LivingEntity user) {
         if (world instanceof ServerWorld serverWorld) {
             stack.damage(1, serverWorld, user instanceof ServerPlayerEntity player ? player : null, item -> {});
             if (stack.isEmpty())
-                return stack.copyComponentsToNewStackIgnoreEmpty(Items.SUGAR, 1);
+                return Items.STICK.getDefaultStack();
         }
         return stack;
     }
@@ -42,6 +36,6 @@ public class CottonCandyItem extends Item {
         int damage = stack.getDamage();
         return damage == 0 ?
             super.getMaxUseTime(stack, user) :
-            START_SPIN_TIME + TIME_TO_MAKE_ONE_LAYER * stack.getDamage();
+            START_SPIN_TIME + TIME_FOR_ONE_LAYER * stack.getDamage();
     }
 }

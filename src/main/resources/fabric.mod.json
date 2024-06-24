@@ -20,6 +20,9 @@
 		],
 		"client": [
 			"net.anawesomguy.carnivalfoods.client.CarnivalFoodsClient"
+		],
+		"fabric-datagen": [
+			"net.anawesomguy.carnivalfoods.CarnivalFoodsDatagen"
 		]
 	},
 	"mixins": [

@@ -41,14 +41,8 @@ public abstract class JsonUnbakedModelMixin implements JsonUnbakedModelExtension
     private void addInheritedElements(Function<Identifier, UnbakedModel> modelLoader, CallbackInfo ci, @Local JsonUnbakedModel jsonModel, @Local UnbakedModel unbakedModel) {
         JsonUnbakedModelMixin jsonModelMixin = (JsonUnbakedModelMixin)(Object)jsonModel;
 
-        if (jsonModelMixin.inheritElements && !jsonModelMixin.elements.isEmpty()) {
-            List<ModelElement> parentElements = ((JsonUnbakedModel)unbakedModel).getElements();
-            int parentSize = parentElements.size();
-            if (parentSize == 1)
-                jsonModelMixin.elements.add(parentElements.getFirst());
-            else if (parentSize > 1)
-                jsonModelMixin.elements.addAll(((JsonUnbakedModel)unbakedModel).getElements());
-        }
+        if (jsonModelMixin.inheritElements && !jsonModelMixin.elements.isEmpty())
+            jsonModelMixin.elements.addAll(((JsonUnbakedModel)unbakedModel).getElements());
     }
 
     @Override

@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "carnival-foods:hotdog_bun"
+    },
+    {
+      "item": "carnival-foods:hotdog"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "carnival-foods:hotdog_in_bun"
+  }
+}
