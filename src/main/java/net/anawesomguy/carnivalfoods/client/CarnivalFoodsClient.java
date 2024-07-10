@@ -90,47 +90,6 @@ public final class CarnivalFoodsClient implements ClientModInitializer {
                     context.drawText(textRenderer, text, centerX - textWidth - colorWidth, y, 16777215, true);
                     context.drawText(textRenderer, colorText, centerX + textWidth - colorWidth, y, color, true);
                 }
-
-                /*
-                // TODO: it doesnt work and i have no clue why and cant be bothered to fix it (draw dyes on screen)
-                List<ItemStack> dyes = new ArrayList<>();
-                for (int i = 0; i < 16; i++) {
-                    ItemStack dyeStack = machine.getStack(i);
-                    if (!dyeStack.isEmpty())
-                        dyes.add(dyeStack);
-                }
-                if (dyes.isEmpty())
-                    return;
-
-                int size = dyes.size();
-                int row1, row2 = 0, row3 = 0;
-                if (size <= 5)
-                    row1 = size;
-                else if (size <= 10)
-                    row2 = (size % (row1 = 5)) + 5;
-                else if (size < 16)
-                    row3 = (size % (row1 = 5)) + (row2 = 10);
-                else { // size can only be 16 now
-                    row1 = 6;
-                    row2 = 11;
-                    row3 = 16;
-                } // row1 is NEVER under 1
-
-                int startingX = width / 2;
-                int y = (height + 25) / 2;
-                int i = 0, x = startingX - row1 * 10;
-                // row1
-                for (; i <= row1; i++, x += 20)
-                    drawStack(context, client.textRenderer, machine.getStack(i), x, y);
-                // row2
-                y += 20;
-                for (x = startingX - (row2 - row1) * 10; i <= row2; i++, x += 20)
-                    drawStack(context, client.textRenderer, machine.getStack(i), x, y);
-                // row3
-                y += 20;
-                for (x = startingX - (row3 - row2) * 10; i <= row3; i++, x += 20)
-                    drawStack(context, client.textRenderer, machine.getStack(i), x, y);
-                 */
             }
         });
     }

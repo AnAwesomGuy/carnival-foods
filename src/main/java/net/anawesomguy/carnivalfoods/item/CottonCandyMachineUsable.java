@@ -11,8 +11,6 @@ import net.minecraft.entity.projectile.ProjectileUtil;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.UseAction;
@@ -36,51 +34,46 @@ public abstract class CottonCandyMachineUsable extends Item {
 
     @Override
     public void usageTick(World world, LivingEntity user, ItemStack stack, int remainingUseTicks) {
-        if (world instanceof ServerWorld) {
-            ItemStack sugars;
-            if (user instanceof PlayerEntity &&
-                raycast((PlayerEntity)user) instanceof BlockHitResult blockHitResult &&
-                blockHitResult.getType() == Type.BLOCK &&
-                world.getBlockEntity(blockHitResult.getBlockPos()) instanceof CottonCandyMachineBlockEntity machine &&
-                !(sugars = machine.getStack(16)).isEmpty()) {
-                if (!machine.incrementSpeed()) {
-                    machine.playerUsing = null;
-                    ItemStack newStack;
-                    if (stack.isOf(CarnivalFoods.COTTON_CANDY))
-                        (newStack = stack).setDamage(stack.getDamage() - 1);
-                    else
-                        newStack = CarnivalFoods.COTTON_CANDY.getDefaultStack();
-                    int color = machine.getCraftedColor();
-                    if (color > -1)
-                        newStack.set(DataComponentTypes.DYED_COLOR, new DyedColorComponent(color, false));
-                    sugars.decrement(1);
-                    stack.decrement(1);
-                    if (stack.getCount() < 1)
-                        user.setStackInHand(user.getActiveHand(), newStack);
-                }
-            } else
-                user.stopUsingItem();
+        ItemStack sugars;
+        if (user instanceof PlayerEntity player &&
+            remainingUseTicks % CottonCandyMachineBlock.TIME_FOR_ONE_LAYER == 0 &&
+            raycast(player) instanceof BlockHitResult blockHitResult &&
+            blockHitResult.getType() == Type.BLOCK &&
+            world.getBlockEntity(blockHitResult.getBlockPos()) instanceof CottonCandyMachineBlockEntity machine &&
+            !(sugars = machine.getStack(16)).isEmpty()) {
+            ItemStack newStack;
+            if (stack.isOf(CarnivalFoods.COTTON_CANDY))
+                (newStack = stack).setDamage(stack.getDamage() - 1);
+            else {
+                newStack = CarnivalFoods.COTTON_CANDY.getDefaultStack();
+                stack.decrement(1);
+                if (stack.getCount() < 1)
+                    player.setStackInHand(player.getActiveHand(), newStack);
+                else
+                    player.getInventory().offerOrDrop(stack);
+            }
+            int color = machine.getCraftedColor();
+            if (color != -1)
+                newStack.set(DataComponentTypes.DYED_COLOR, new DyedColorComponent(color, false));
+            sugars.decrement(1);
+        } else {
+            stack.remove(CarnivalFoods.MARKER);
+            user.stopUsingItem();
         }
     }
 
     @Override
-    public void onStoppedUsing(ItemStack stack, World world, LivingEntity user, int remainingUseTicks) {
-        super.onStoppedUsing(stack, world, user, remainingUseTicks);
-        resetPlayerUsing(user, world);
-    }
-
-    @Override
     public ItemStack finishUsing(ItemStack stack, World world, LivingEntity user) {
-        resetPlayerUsing(user, world);
-        return super.finishUsing(stack, world, user);
+        stack = super.finishUsing(stack, world, user);
+        usageTick(world, user, stack, 0);
+        return stack;
     }
 
     @Override
     public ActionResult useOnBlock(ItemUsageContext context) {
         PlayerEntity player = context.getPlayer();
         if (player != null &&
-            context.getWorld().getBlockEntity(context.getBlockPos()) instanceof CottonCandyMachineBlockEntity machine &&
-            (machine.playerUsing == null || machine.playerUsing == player.getUuid()))
+            context.getWorld().getBlockEntity(context.getBlockPos()) instanceof CottonCandyMachineBlockEntity machine)
             if (machine.getStack(16).isEmpty())
                 player.sendMessage(Text.translatable("message.carnival-foods.cotton_candy_machine_fail"), true);
             else {
@@ -94,13 +87,5 @@ public abstract class CottonCandyMachineUsable extends Item {
     protected HitResult raycast(PlayerEntity player) {
         return ProjectileUtil.getCollision(player, entity -> !entity.isSpectator() && entity.canHit(),
                                            player.getBlockInteractionRange());
-    }
-
-    private void resetPlayerUsing(LivingEntity user, World world) {
-        if (user instanceof ServerPlayerEntity &&
-            raycast((PlayerEntity)user) instanceof BlockHitResult blockHitResult &&
-            blockHitResult.getType() == Type.BLOCK &&
-            world.getBlockEntity(blockHitResult.getBlockPos()) instanceof CottonCandyMachineBlockEntity machine)
-            machine.playerUsing = null;
     }
 }

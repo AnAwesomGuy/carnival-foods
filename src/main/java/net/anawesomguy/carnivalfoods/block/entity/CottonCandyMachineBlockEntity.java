@@ -1,7 +1,6 @@
 package net.anawesomguy.carnivalfoods.block.entity;
 
 import net.anawesomguy.carnivalfoods.CarnivalFoods;
-import net.anawesomguy.carnivalfoods.block.CottonCandyMachineBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
@@ -14,13 +13,10 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.nbt.NbtHelper;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.registry.RegistryWrapper.WrapperLookup;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ColorHelper.Argb;
@@ -30,21 +26,12 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
-import java.util.UUID;
 
 public class CottonCandyMachineBlockEntity extends BlockEntity implements BasicInventory {
     public static final BlockEntityType<CottonCandyMachineBlockEntity> TYPE =
         new BlockEntityType<>(CottonCandyMachineBlockEntity::new, Set.of(CarnivalFoods.COTTON_CANDY_MACHINE), null);
 
     protected final DefaultedList<ItemStack> items; // 0-15 is dyes, 16 is sugar
-    public UUID playerUsing;
-
-    /**
-     * A value between 0 and 32, indicating how fast the blade will spin and how far the progress of starting the spin is.
-     *
-     * @see CottonCandyMachineBlock#START_SPIN_TIME
-     */
-    protected byte speed;
 
     public CottonCandyMachineBlockEntity(BlockPos pos, BlockState state) {
         super(TYPE, pos, state);
@@ -78,30 +65,12 @@ public class CottonCandyMachineBlockEntity extends BlockEntity implements BasicI
         super.readNbt(nbt, lookup);
         items.clear();
         Inventories.readNbt(nbt, items, lookup);
-        speed = nbt.getByte("speed");
-        if (speed < (byte)0)
-            speed = (byte)0;
-        else if (speed > (byte)32)
-            speed = (byte)32;
-        NbtElement uuid = nbt.get("playerUsing");
-        if (uuid != null)
-            playerUsing = NbtHelper.toUuid(uuid);
-        else
-            playerUsing = null;
     }
 
     @Override
     protected void writeNbt(NbtCompound nbt, WrapperLookup lookup) {
-        writeNbtWithoutPlayer(nbt, lookup);
-        if (playerUsing != null)
-            nbt.putUuid("playerUsing", playerUsing);
-    }
-
-    protected void writeNbtWithoutPlayer(NbtCompound nbt, WrapperLookup lookup) {
         super.writeNbt(nbt, lookup);
         Inventories.writeNbt(nbt, items, lookup);
-        if (speed > (byte)0)
-            nbt.putByte("speed", speed);
     }
 
     @Override
@@ -124,27 +93,7 @@ public class CottonCandyMachineBlockEntity extends BlockEntity implements BasicI
 
     @Override
     public NbtCompound toInitialChunkDataNbt(WrapperLookup lookup) {
-        NbtCompound nbt = new NbtCompound();
-        writeNbtWithoutPlayer(nbt, lookup);
-        return nbt;
-    }
-
-    public byte getSpeed() {
-        return speed;
-    }
-
-    /**
-     * @return {@code true} if speed was incremented.
-     */
-    public boolean incrementSpeed() {
-        if (speed >= (byte)32)
-            return false;
-        speed += (byte)2;
-        if (speed > (byte)32)
-            speed = (byte)32;
-        if (world instanceof ServerWorld serverWorld)
-            serverWorld.getChunkManager().markForUpdate(pos);
-        return true;
+        return createNbt(lookup);
     }
 
     public int getCraftedColor() {
@@ -175,14 +124,6 @@ public class CottonCandyMachineBlockEntity extends BlockEntity implements BasicI
         green = (int)((float)green * f / g);
         blue = (int)((float)blue * f / g);
         return Argb.getArgb(red, green, blue);
-    }
-
-    public void decrementSpeed() {
-        if (speed > 0) {
-            speed--;
-            if (world instanceof ServerWorld serverWorld)
-                serverWorld.getChunkManager().markForUpdate(pos);
-        }
     }
 
     @Internal

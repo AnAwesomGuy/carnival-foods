@@ -83,8 +83,7 @@ public class CottonCandyMachineRenderer implements BlockEntityRenderer<CottonCan
     @Override
     public void render(CottonCandyMachineBlockEntity entity, float tickDelta, MatrixStack matrices,
                        VertexConsumerProvider vertexConsumers, int light, int overlay) {
-        if (entity.getSpeed() > (byte)0)
-            spinning.yaw = (spinning.yaw + tickDelta * ((float)entity.getSpeed() / 32F)) % PI;
+        spinning.yaw = (spinning.yaw + tickDelta * 0.9F) % PI;
         renderStationary(matrices, vertexConsumers, light, overlay);
     }
 

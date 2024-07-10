@@ -10,8 +10,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.BlockWithEntity;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityTicker;
-import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.DyeItem;
 import net.minecraft.item.Item;
@@ -33,7 +31,6 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public class CottonCandyMachineBlock extends BlockWithEntity {
-    public static final int START_SPIN_TIME = 16;
     public static final int TIME_FOR_ONE_LAYER = 24;
 
     protected static final VoxelShape SHAPE = VoxelShapes.union(
@@ -67,18 +64,6 @@ public class CottonCandyMachineBlock extends BlockWithEntity {
         return new CottonCandyMachineBlockEntity(pos, state);
     }
 
-    @Nullable
-    @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state,
-                                                                  BlockEntityType<T> type) {
-        return world.isClient ? null :
-            validateTicker(type, CottonCandyMachineBlockEntity.TYPE,
-                           (world1, pos, state1, blockEntity) -> {
-                               if (blockEntity.playerUsing == null)
-                                   blockEntity.decrementSpeed();
-                           });
-    }
-
     @Override
     protected BlockRenderType getRenderType(BlockState state) {
         return BlockRenderType.ENTITYBLOCK_ANIMATED;
@@ -109,11 +94,8 @@ public class CottonCandyMachineBlock extends BlockWithEntity {
         if (world.getBlockEntity(pos) instanceof CottonCandyMachineBlockEntity machine) {
             Item item = stack.getItem();
             if (item instanceof CottonCandyMachineUsable) {
-                if (machine.playerUsing == null || machine.playerUsing == player.getUuid()) {
-                    if (item instanceof CottonCandyItem)
-                        stack.set(CarnivalFoods.MARKER, Unit.INSTANCE);
-                    machine.playerUsing = player.getUuid();
-                }
+                if (item instanceof CottonCandyItem)
+                    stack.set(CarnivalFoods.MARKER, Unit.INSTANCE);
             } else {
                 int amount = 0;
                 int max = machine.getMaxCount(stack);
