@@ -8,6 +8,7 @@ import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.MapColor;
+import net.minecraft.component.ComponentType;
 import net.minecraft.component.type.FoodComponent;
 import net.minecraft.component.type.FoodComponent.Builder;
 import net.minecraft.entity.effect.StatusEffectInstance;
@@ -15,19 +16,18 @@ import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroups;
+import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import net.minecraft.util.Unit;
 
 public final class CarnivalFoods implements ModInitializer {
     public static final String MOD_ID = "carnival-foods";
-    public static final Logger LOGGER = LoggerFactory.getLogger("carnival-foods");
 
     public static final FoodComponent
-        COTTON_CANDY_FOOD = new Builder().statusEffect(new StatusEffectInstance(StatusEffects.REGENERATION, 3), 0.5F)
-                                         .statusEffect(new StatusEffectInstance(StatusEffects.SPEED, 5), 0.75F)
+        COTTON_CANDY_FOOD = new Builder().statusEffect(new StatusEffectInstance(StatusEffects.REGENERATION, 7), 0.5F)
+                                         .statusEffect(new StatusEffectInstance(StatusEffects.SPEED, 10), 0.75F)
                                          .nutrition(1)
                                          .saturationModifier(.2F)
                                          .alwaysEdible()
@@ -40,6 +40,13 @@ public final class CarnivalFoods implements ModInitializer {
                                          .nutrition(4)
                                          .saturationModifier(0.3F)
                                          .build();
+    /**
+     * Currently only used for checking if {@linkplain CottonCandyItem cotton candy} is being used on a {@linkplain CottonCandyMachineBlock cotton candy machine}.
+     */
+    public static final ComponentType<Unit> MARKER = ComponentType.<Unit>builder()
+                                                                  .codec(Unit.CODEC)
+                                                                  .packetCodec(PacketCodec.unit(Unit.INSTANCE))
+                                                                  .build();
 
     public static final Block COTTON_CANDY_MACHINE = new CottonCandyMachineBlock(
         AbstractBlock.Settings.create()
@@ -48,9 +55,10 @@ public final class CarnivalFoods implements ModInitializer {
                               .strength(2F)
                               .nonOpaque()
     );
+
     public static final Item
-        COTTON_CANDY = new CottonCandyItem(new Item.Settings().food(COTTON_CANDY_FOOD).maxDamage(3)),
         COTTON_CANDY_MACHINE_ITEM = new BlockItem(COTTON_CANDY_MACHINE, new Item.Settings()),
+        COTTON_CANDY = new CottonCandyItem(new Item.Settings().food(COTTON_CANDY_FOOD).maxDamage(3)),
         HOTDOG_BUN = new Item(new Item.Settings().food(HOTDOG_BUN_FOOD)),
         HOTDOG = new Item(new Item.Settings().food(HOTDOG_FOOD)),
         HOTDOG_IN_BUN = new Item(new Item.Settings().food(HOTDOG_IN_BUN_FOOD)),
@@ -58,17 +66,19 @@ public final class CarnivalFoods implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        Registry.register(Registries.ITEM, id("cotton_candy"), COTTON_CANDY);
+        Registry.register(Registries.DATA_COMPONENT_TYPE, id("marker"), MARKER);
         Identifier cottonCandyMachine = id("cotton_candy_machine");
         Registry.register(Registries.BLOCK_ENTITY_TYPE, cottonCandyMachine, CottonCandyMachineBlockEntity.TYPE);
         Registry.register(Registries.BLOCK, cottonCandyMachine, COTTON_CANDY_MACHINE);
         Registry.register(Registries.ITEM, cottonCandyMachine, COTTON_CANDY_MACHINE_ITEM);
+        Registry.register(Registries.ITEM, id("cotton_candy"), COTTON_CANDY);
         Registry.register(Registries.ITEM, id("hotdog_bun"), HOTDOG_BUN);
         Registry.register(Registries.ITEM, id("hotdog"), HOTDOG);
         Registry.register(Registries.ITEM, id("hotdog_in_bun"), HOTDOG_IN_BUN);
         Registry.register(Registries.ITEM, id("vegan_hotdog"), VEGAN_HOTDOG);
 
-        ItemGroupEvents.modifyEntriesEvent(ItemGroups.FUNCTIONAL).register(entries -> entries.add(COTTON_CANDY_MACHINE));
+        ItemGroupEvents.modifyEntriesEvent(ItemGroups.FUNCTIONAL)
+                       .register(entries -> entries.add(COTTON_CANDY_MACHINE));
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.FOOD_AND_DRINK).register(entries -> {
             entries.add(COTTON_CANDY);
             entries.add(HOTDOG_BUN);

@@ -1,7 +1,11 @@
 {
   "block.carnival-foods.cotton_candy_machine": "Cotton Candy Machine",
+  "item.carnival-foods.cotton_candy": "Cotton Candy",
   "item.carnival-foods.hotdog": "Hotdog",
   "item.carnival-foods.hotdog_bun": "Hotdog Bun",
   "item.carnival-foods.hotdog_in_bun": "Hotdog in Bun",
-  "item.carnival-foods.vegan_hotdog": "Vegan \"Hotdog\""
+  "item.carnival-foods.vegan_hotdog": "Vegan \"Hotdog\"",
+  "message.carnival-foods.color": "Color: ",
+  "message.carnival-foods.cotton_candy_machine_fail": "You need to add sugar!",
+  "message.carnival-foods.shame": "Shame on you for mixing all the colors together, disgusting!"
 }

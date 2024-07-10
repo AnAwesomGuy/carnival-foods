@@ -29,7 +29,7 @@ public abstract class ItemRendererMixin {
         if (!bl) {
             BakedModel heldModel = models.getModelManager().getModel(CarnivalFoodsClient.HELD_ITEM_MODELS.get(stack.getItem()));
             if (heldModel != null)
-                modelRef.set(heldModel);
+                modelRef.set(heldModel.getOverrides().apply(heldModel, stack, null, null, renderMode.ordinal()));
         }
     }
 }

@@ -1,0 +1,21 @@
+{
+  "type": "block",
+  "pools": [
+    {
+      "bonus_rolls": 0,
+      "conditions": [
+        {
+          "condition": "survives_explosion"
+        }
+      ],
+      "entries": [
+        {
+          "type": "item",
+          "name": "carnival-foods:cotton_candy_machine"
+        }
+      ],
+      "rolls": 1
+    }
+  ],
+  "random_sequence": "carnival-foods:blocks/cotton_candy_machine"
+}

@@ -2,6 +2,7 @@
   "parent": "item/generated",
   "textures": {
     "layer0": "item/stick",
-    "layer1": "carnival-foods:item/cotton_candy"
+    "layer1": "carnival-foods:item/cotton_candy",
+    "particle": "#layer1"
   }
 }

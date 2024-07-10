@@ -13,6 +13,7 @@
 		"issues": "${github_repo}/issues"
 	},
 	"license": "Apache-2.0",
+	"icon": "assets/carnival-foods/textures/item/hotdog_in_bun.png",
 	"environment": "*",
 	"entrypoints": {
 		"main": [
@@ -33,6 +34,5 @@
 		"minecraft": ">1.20.6",
 		"java": ">=21",
 		"fabric-api": "*"
-	},
-	"accessWidener" : "carnival-foods.accesswidener"
+	}
 }

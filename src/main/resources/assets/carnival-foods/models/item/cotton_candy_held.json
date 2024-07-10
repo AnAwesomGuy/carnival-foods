@@ -2,7 +2,7 @@
 	"credit": "Made with Blockbench",
 	"textures": {
 		"0": "carnival-foods:item/cotton_candy_held",
-		"particle": "#0"
+		"particle": "carnival-foods:item/cotton_candy"
 	},
 	"elements": [
 		{
@@ -48,19 +48,19 @@
 	"overrides": [
 		{
 			"predicate": {
-				"carnival-foods:size": 1
+				"damage": 0.666
 			},
 			"model": "carnival-foods:item/cotton_candy_small"
 		},
 		{
 			"predicate": {
-				"carnival-foods:size": 0.5
+				"damage": 0.333
 			},
 			"model": "carnival-foods:item/cotton_candy_medium"
 		},
 		{
 			"predicate": {
-				"carnival-foods:size": 0
+				"damage": 0
 			},
 			"model": "carnival-foods:item/cotton_candy_large"
 		}

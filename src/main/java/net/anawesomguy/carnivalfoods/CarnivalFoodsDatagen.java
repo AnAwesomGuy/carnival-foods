@@ -19,7 +19,7 @@ import java.util.concurrent.CompletableFuture;
 import static net.anawesomguy.carnivalfoods.CarnivalFoods.*;
 import static net.minecraft.item.Items.*;
 
-public class CarnivalFoodsDatagen implements DataGeneratorEntrypoint {
+public final class CarnivalFoodsDatagen implements DataGeneratorEntrypoint {
     @Override
     public void onInitializeDataGenerator(FabricDataGenerator dataGenerator) {
         Pack pack = dataGenerator.createPack();
@@ -29,7 +29,7 @@ public class CarnivalFoodsDatagen implements DataGeneratorEntrypoint {
 
     private static final class RecipeGenerator extends FabricRecipeProvider {
         private RecipeGenerator(FabricDataOutput output,
-                               CompletableFuture<WrapperLookup> registriesFuture) {
+                                CompletableFuture<WrapperLookup> registriesFuture) {
             super(output, registriesFuture);
         }
 
@@ -51,7 +51,8 @@ public class CarnivalFoodsDatagen implements DataGeneratorEntrypoint {
             ShapelessRecipeJsonBuilder.create(RecipeCategory.FOOD, HOTDOG)
                                       .input(ItemTags.SWORDS)
                                       .input(COOKED_PORKCHOP)
-                                      .criterion("has_porkchop", FabricRecipeProvider.conditionsFromItem(COOKED_PORKCHOP))
+                                      .criterion("has_porkchop",
+                                                 FabricRecipeProvider.conditionsFromItem(COOKED_PORKCHOP))
                                       .offerTo(exporter);
             ShapelessRecipeJsonBuilder.create(RecipeCategory.FOOD, HOTDOG_IN_BUN)
                                       .input(HOTDOG_BUN)
@@ -69,7 +70,6 @@ public class CarnivalFoodsDatagen implements DataGeneratorEntrypoint {
     }
 
     private static final class LanguageProvider extends FabricLanguageProvider {
-
         private LanguageProvider(FabricDataOutput dataOutput, CompletableFuture<WrapperLookup> registryLookup) {
             super(dataOutput, "en_us", registryLookup);
         }
@@ -77,10 +77,15 @@ public class CarnivalFoodsDatagen implements DataGeneratorEntrypoint {
         @Override
         public void generateTranslations(WrapperLookup registryLookup, TranslationBuilder translationBuilder) {
             translationBuilder.add(COTTON_CANDY_MACHINE, "Cotton Candy Machine");
+            translationBuilder.add(COTTON_CANDY, "Cotton Candy");
             translationBuilder.add(HOTDOG_BUN, "Hotdog Bun");
             translationBuilder.add(HOTDOG, "Hotdog");
             translationBuilder.add(HOTDOG_IN_BUN, "Hotdog in Bun");
             translationBuilder.add(VEGAN_HOTDOG, "Vegan \"Hotdog\"");
+
+            translationBuilder.add("message.carnival-foods.cotton_candy_machine_fail", "You need to add sugar!");
+            translationBuilder.add("message.carnival-foods.shame", "Shame on you for mixing all the colors together, disgusting!");
+            translationBuilder.add("message.carnival-foods.color", "Color: ");
         }
     }
 }
