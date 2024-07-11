@@ -42,6 +42,9 @@ public class CottonCandyMachineRenderer implements BlockEntityRenderer<CottonCan
         this.spinning = part.getChild("spinning");
     }
 
+    /**
+     * @author Made with BlockBench, and textured by {@code @thegiftedgeek} on Discord
+     */
     public static TexturedModelData createBodyLayer() {
         ModelData modelData = new ModelData();
         ModelPartData data = modelData.getRoot();

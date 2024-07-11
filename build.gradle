@@ -46,7 +46,7 @@ processResources {
 		fileTree(dir: outputs.files.asPath).each {
 			if (it.name.endsWith(".json")) {
 				def parsed = new JsonSlurper().parse(it)
-				parsed.remove "credits"
+				parsed.remove "credit"
 				it.text = JsonOutput.toJson(new JsonSlurper().parse(it))
 			}
 		}
