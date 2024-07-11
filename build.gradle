@@ -47,7 +47,7 @@ processResources {
 			if (it.name.endsWith(".json")) {
 				def parsed = new JsonSlurper().parse(it)
 				parsed.remove "credit"
-				it.text = JsonOutput.toJson(new JsonSlurper().parse(it))
+				it.text = JsonOutput.toJson(parsed)
 			}
 		}
 	}
@@ -104,11 +104,20 @@ loom {
 publishMods {
 	file = remapJar.archiveFile
 	additionalFiles.from remapSourcesJar.archiveFile
+	type = STABLE
 
 	displayName = display_name
 
 	modrinth {
 		accessToken = providers.environmentVariable 'MODRINTH_TOKEN'
+		projectId = modrinth_id
 		minecraftVersions.add minecraft_version
+	}
+
+    github {
+		accessToken = providers.environmentVariable 'GITHUB_TOKEN'
+		repository = github
+		tagName = mod_version
+		commitish = 'master'
 	}
 }
