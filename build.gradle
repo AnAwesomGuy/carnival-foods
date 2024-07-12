@@ -105,6 +105,7 @@ publishMods {
 	file = remapJar.archiveFile
 	additionalFiles.from remapSourcesJar.archiveFile
 	type = STABLE
+	changelog = file("CHANGELOG.md").text
 
 	displayName = display_name
 
