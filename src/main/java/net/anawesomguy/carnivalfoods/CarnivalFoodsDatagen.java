@@ -44,13 +44,11 @@ public final class CarnivalFoodsDatagen implements DataGeneratorEntrypoint {
                                    .criterion("has_bars", FabricRecipeProvider.conditionsFromItem(Items.IRON_BARS))
                                    .offerTo(exporter);
             ShapelessRecipeJsonBuilder.create(RecipeCategory.FOOD, HOTDOG_BUN)
-                                      .input(ItemTags.SWORDS)
                                       .input(BREAD)
                                       .criterion("has_bread", FabricRecipeProvider.conditionsFromItem(BREAD))
                                       .offerTo(exporter);
             ShapelessRecipeJsonBuilder.create(RecipeCategory.FOOD, HOTDOG)
                                       .input(ItemTags.SWORDS)
-                                      .input(COOKED_PORKCHOP)
                                       .criterion("has_porkchop",
                                                  FabricRecipeProvider.conditionsFromItem(COOKED_PORKCHOP))
                                       .offerTo(exporter);
