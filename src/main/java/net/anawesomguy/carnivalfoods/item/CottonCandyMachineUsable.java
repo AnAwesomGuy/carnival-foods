@@ -46,11 +46,13 @@ public abstract class CottonCandyMachineUsable extends Item {
                 blockHitResult.getType() == Type.BLOCK &&
                 world.getBlockEntity(blockHitResult.getBlockPos()) instanceof CottonCandyMachineBlockEntity machine &&
                 !(sugars = machine.getStack(16)).isEmpty()) {
-                ItemStack newStack;
-                if (stack.isOf(CarnivalFoods.COTTON_CANDY))
-                    (newStack = stack).setDamage(stack.getDamage() - 1);
-                else {
-                    newStack = CarnivalFoods.COTTON_CANDY.getDefaultStack();
+                int color = machine.getCraftedColor();
+                if (stack.isOf(CarnivalFoods.COTTON_CANDY)) {
+                    stack.setDamage(stack.getDamage() - 1);
+                    if (color != -1)
+                        stack.set(DataComponentTypes.DYED_COLOR, new DyedColorComponent(color, false));
+                } else {
+                    ItemStack newStack = stack.copyComponentsToNewStack(CarnivalFoods.COTTON_CANDY, 1);
                     newStack.setDamage(newStack.getMaxDamage() - 1);
                     stack.decrement(1);
                     if (stack.getCount() < 1)
@@ -58,9 +60,6 @@ public abstract class CottonCandyMachineUsable extends Item {
                     else
                         player.getInventory().offerOrDrop(stack);
                 }
-                int color = machine.getCraftedColor();
-                if (color != -1)
-                    newStack.set(DataComponentTypes.DYED_COLOR, new DyedColorComponent(color, false));
                 sugars.decrement(1);
             } else
                 user.stopUsingItem();
@@ -80,10 +79,9 @@ public abstract class CottonCandyMachineUsable extends Item {
         World world = context.getWorld();
         if (player != null &&
             world.getBlockEntity(context.getBlockPos()) instanceof CottonCandyMachineBlockEntity machine)
-            if (machine.getStack(16).isEmpty()) {
+            if (machine.getStack(16).isEmpty())
                 player.sendMessage(Text.translatable("message.carnival-foods.cotton_candy_machine_fail"), true);
-                return ActionResult.FAIL;
-            } else {
+            else {
                 player.setCurrentHand(context.getHand());
                 return ActionResult.CONSUME;
             }
