@@ -112,6 +112,10 @@ publishMods {
 		accessToken = providers.environmentVariable 'MODRINTH_TOKEN'
 		projectId = modrinth_id
 		minecraftVersions.add minecraft_version
+
+		requires {
+			slug = 'fabric-api'
+		}
 	}
 
     github {
