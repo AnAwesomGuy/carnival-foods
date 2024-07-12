@@ -8,7 +8,6 @@ import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.MapColor;
-import net.minecraft.component.ComponentType;
 import net.minecraft.component.type.FoodComponent;
 import net.minecraft.component.type.FoodComponent.Builder;
 import net.minecraft.entity.effect.StatusEffectInstance;
@@ -16,37 +15,28 @@ import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroups;
-import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.Unit;
 
 public final class CarnivalFoods implements ModInitializer {
     public static final String MOD_ID = "carnival-foods";
 
     public static final FoodComponent
-        COTTON_CANDY_FOOD = new Builder().statusEffect(new StatusEffectInstance(StatusEffects.REGENERATION, 7), 0.5F)
-                                         .statusEffect(new StatusEffectInstance(StatusEffects.SPEED, 10), 0.75F)
+        COTTON_CANDY_FOOD = new Builder().statusEffect(new StatusEffectInstance(StatusEffects.REGENERATION, 65), 0.5F)
+                                         .statusEffect(new StatusEffectInstance(StatusEffects.SPEED, 100, 2), 0.75F)
                                          .nutrition(1)
-                                         .saturationModifier(.2F)
+                                         .saturationModifier(0.2F)
                                          .alwaysEdible()
                                          .snack()
                                          .build(),
         HOTDOG_BUN_FOOD = new Builder().nutrition(3).saturationModifier(0.23F).build(),
         HOTDOG_FOOD = new Builder().nutrition(2).saturationModifier(0.3F).build(),
         HOTDOG_IN_BUN_FOOD = new Builder().nutrition(5).saturationModifier(0.57F).build(),
-        VEGAN_HOTDOG_FOOD = new Builder().statusEffect(new StatusEffectInstance(StatusEffects.NAUSEA, 4), 0.2F)
+        VEGAN_HOTDOG_FOOD = new Builder().statusEffect(new StatusEffectInstance(StatusEffects.NAUSEA, 40), 0.35F)
                                          .nutrition(4)
                                          .saturationModifier(0.3F)
                                          .build();
-    /**
-     * Currently only used for checking if {@linkplain CottonCandyItem cotton candy} is being used on a {@linkplain CottonCandyMachineBlock cotton candy machine}.
-     */
-    public static final ComponentType<Unit> MARKER = ComponentType.<Unit>builder()
-                                                                  .codec(Unit.CODEC)
-                                                                  .packetCodec(PacketCodec.unit(Unit.INSTANCE))
-                                                                  .build();
 
     public static final Block COTTON_CANDY_MACHINE = new CottonCandyMachineBlock(
         AbstractBlock.Settings.create()
@@ -66,7 +56,6 @@ public final class CarnivalFoods implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        Registry.register(Registries.DATA_COMPONENT_TYPE, id("marker"), MARKER);
         Identifier cottonCandyMachine = id("cotton_candy_machine");
         Registry.register(Registries.BLOCK_ENTITY_TYPE, cottonCandyMachine, CottonCandyMachineBlockEntity.TYPE);
         Registry.register(Registries.BLOCK, cottonCandyMachine, COTTON_CANDY_MACHINE);

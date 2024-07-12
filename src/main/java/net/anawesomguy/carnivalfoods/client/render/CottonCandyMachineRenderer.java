@@ -92,7 +92,7 @@ public class CottonCandyMachineRenderer implements BlockEntityRenderer<CottonCan
 
     public void renderStationary(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
         VertexConsumer consumer = TEXTURE.getVertexConsumer(vertexConsumers, RenderLayer::getEntityCutout);
-        base.render(matrices, consumer, light, overlay);
         spinning.render(matrices, consumer, light, overlay);
+        base.render(matrices, consumer, light, overlay);
     }
 }

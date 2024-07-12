@@ -51,7 +51,7 @@ public class CottonCandyMachineBlockEntity extends BlockEntity implements BasicI
 
     @Override
     public int getMaxCount(ItemStack stack) {
-        return stack.getItem() == Items.SUGAR ? 3 : BasicInventory.super.getMaxCount(stack);
+        return stack.getItem() == Items.SUGAR ? 16 : BasicInventory.super.getMaxCount(stack);
     }
 
     @Override

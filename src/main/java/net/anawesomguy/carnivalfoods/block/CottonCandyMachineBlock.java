@@ -1,7 +1,6 @@
 package net.anawesomguy.carnivalfoods.block;
 
 import com.mojang.serialization.MapCodec;
-import net.anawesomguy.carnivalfoods.CarnivalFoods;
 import net.anawesomguy.carnivalfoods.block.entity.CottonCandyMachineBlockEntity;
 import net.anawesomguy.carnivalfoods.item.CottonCandyItem;
 import net.anawesomguy.carnivalfoods.item.CottonCandyMachineUsable;
@@ -10,6 +9,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.BlockWithEntity;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.DyeItem;
 import net.minecraft.item.Item;
@@ -21,7 +21,6 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ItemActionResult;
 import net.minecraft.util.ItemScatterer;
-import net.minecraft.util.Unit;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.shape.VoxelShape;
@@ -94,8 +93,8 @@ public class CottonCandyMachineBlock extends BlockWithEntity {
         if (world.getBlockEntity(pos) instanceof CottonCandyMachineBlockEntity machine) {
             Item item = stack.getItem();
             if (item instanceof CottonCandyMachineUsable) {
-                if (item instanceof CottonCandyItem)
-                    stack.set(CarnivalFoods.MARKER, Unit.INSTANCE);
+                if (item instanceof CottonCandyItem && stack.getDamage() > 0)
+                    stack.remove(DataComponentTypes.FOOD);
             } else {
                 int amount = 0;
                 int max = machine.getMaxCount(stack);

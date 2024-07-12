@@ -1,5 +1,5 @@
 {
   "textures": {
-    "particle": "block/cauldron_side"
+    "particle": "carnival-foods:entity/cotton_candy_machine"
   }
 }

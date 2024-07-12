@@ -4,8 +4,8 @@
 	"inherit_elements": true,
 	"elements": [
 		{
-			"from": [4.5, 12.5, 0.5],
-			"to": [11.5, 19.5, 7.5],
+			"from": [4.5, 12, 0.5],
+			"to": [11.5, 18.5, 7.5],
 			"rotation": {"angle": 22.5, "axis": "x", "origin": [0, 0, 0]},
 			"faces": {
 				"north": {"uv": [8, 0, 9, 1], "texture": "#0", "tintindex": 1},

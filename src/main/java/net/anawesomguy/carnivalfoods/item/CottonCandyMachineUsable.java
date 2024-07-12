@@ -27,6 +27,10 @@ public abstract class CottonCandyMachineUsable extends Item {
         super(settings);
     }
 
+    protected UseAction superGetUseAction(ItemStack stack) {
+        return super.getUseAction(stack);
+    }
+
     @Override
     public UseAction getUseAction(ItemStack stack) {
         return UseAction.BRUSH;
@@ -34,31 +38,32 @@ public abstract class CottonCandyMachineUsable extends Item {
 
     @Override
     public void usageTick(World world, LivingEntity user, ItemStack stack, int remainingUseTicks) {
-        ItemStack sugars;
-        if (user instanceof PlayerEntity player &&
-            remainingUseTicks % CottonCandyMachineBlock.TIME_FOR_ONE_LAYER == 0 &&
-            raycast(player) instanceof BlockHitResult blockHitResult &&
-            blockHitResult.getType() == Type.BLOCK &&
-            world.getBlockEntity(blockHitResult.getBlockPos()) instanceof CottonCandyMachineBlockEntity machine &&
-            !(sugars = machine.getStack(16)).isEmpty()) {
-            ItemStack newStack;
-            if (stack.isOf(CarnivalFoods.COTTON_CANDY))
-                (newStack = stack).setDamage(stack.getDamage() - 1);
-            else {
-                newStack = CarnivalFoods.COTTON_CANDY.getDefaultStack();
-                stack.decrement(1);
-                if (stack.getCount() < 1)
-                    player.setStackInHand(player.getActiveHand(), newStack);
-                else
-                    player.getInventory().offerOrDrop(stack);
-            }
-            int color = machine.getCraftedColor();
-            if (color != -1)
-                newStack.set(DataComponentTypes.DYED_COLOR, new DyedColorComponent(color, false));
-            sugars.decrement(1);
-        } else {
-            stack.remove(CarnivalFoods.MARKER);
-            user.stopUsingItem();
+        if (remainingUseTicks < getMaxUseTime(stack, user) &&
+            remainingUseTicks % CottonCandyMachineBlock.TIME_FOR_ONE_LAYER == 0) {
+            ItemStack sugars;
+            if (user instanceof PlayerEntity player &&
+                raycast(player) instanceof BlockHitResult blockHitResult &&
+                blockHitResult.getType() == Type.BLOCK &&
+                world.getBlockEntity(blockHitResult.getBlockPos()) instanceof CottonCandyMachineBlockEntity machine &&
+                !(sugars = machine.getStack(16)).isEmpty()) {
+                ItemStack newStack;
+                if (stack.isOf(CarnivalFoods.COTTON_CANDY))
+                    (newStack = stack).setDamage(stack.getDamage() - 1);
+                else {
+                    newStack = CarnivalFoods.COTTON_CANDY.getDefaultStack();
+                    newStack.setDamage(newStack.getMaxDamage() - 1);
+                    stack.decrement(1);
+                    if (stack.getCount() < 1)
+                        player.setStackInHand(player.getActiveHand(), newStack);
+                    else
+                        player.getInventory().offerOrDrop(stack);
+                }
+                int color = machine.getCraftedColor();
+                if (color != -1)
+                    newStack.set(DataComponentTypes.DYED_COLOR, new DyedColorComponent(color, false));
+                sugars.decrement(1);
+            } else
+                user.stopUsingItem();
         }
     }
 
@@ -72,11 +77,13 @@ public abstract class CottonCandyMachineUsable extends Item {
     @Override
     public ActionResult useOnBlock(ItemUsageContext context) {
         PlayerEntity player = context.getPlayer();
+        World world = context.getWorld();
         if (player != null &&
-            context.getWorld().getBlockEntity(context.getBlockPos()) instanceof CottonCandyMachineBlockEntity machine)
-            if (machine.getStack(16).isEmpty())
+            world.getBlockEntity(context.getBlockPos()) instanceof CottonCandyMachineBlockEntity machine)
+            if (machine.getStack(16).isEmpty()) {
                 player.sendMessage(Text.translatable("message.carnival-foods.cotton_candy_machine_fail"), true);
-            else {
+                return ActionResult.FAIL;
+            } else {
                 player.setCurrentHand(context.getHand());
                 return ActionResult.CONSUME;
             }

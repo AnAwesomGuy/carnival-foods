@@ -36,7 +36,7 @@ public abstract class JsonUnbakedModelMixin implements JsonUnbakedModelExtension
     @Inject(
         method = "setParents",
         at = @At(value = "JUMP", opcode = Opcodes.GOTO, ordinal = 0),
-        slice = @Slice(from = @At(value = "FIELD", target = "Lnet/minecraft/client/render/model/json/JsonUnbakedModel;parent:Lnet/minecraft/client/render/model/json/JsonUnbakedModel;"))
+        slice = @Slice(from = @At(value = "FIELD", target = "Lnet/minecraft/client/render/model/json/JsonUnbakedModel;parent:Lnet/minecraft/client/render/model/json/JsonUnbakedModel;", opcode = Opcodes.PUTFIELD))
     ) // targets right before the for loop loops over, after `parent` is set
     private void addInheritedElements(Function<Identifier, UnbakedModel> modelLoader, CallbackInfo ci, @Local JsonUnbakedModel jsonModel, @Local UnbakedModel unbakedModel) {
         JsonUnbakedModelMixin jsonModelMixin = (JsonUnbakedModelMixin)(Object)jsonModel;

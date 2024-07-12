@@ -7,9 +7,11 @@ import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.item.ItemModels;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.render.model.BakedModel;
+import net.minecraft.client.render.model.BakedModelManager;
 import net.minecraft.client.render.model.json.ModelTransformationMode;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.Identifier;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -27,9 +29,16 @@ public abstract class ItemRendererMixin {
                                   MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay,
                                   BakedModel model, CallbackInfo ci, @Local(ordinal = 1) boolean bl, @Local(argsOnly = true) LocalRef<BakedModel> modelRef) {
         if (!bl) {
-            BakedModel heldModel = models.getModelManager().getModel(CarnivalFoodsClient.HELD_ITEM_MODELS.get(stack.getItem()));
-            if (heldModel != null)
-                modelRef.set(heldModel.getOverrides().apply(heldModel, stack, null, null, renderMode.ordinal()));
+            Identifier id = CarnivalFoodsClient.HELD_ITEM_MODELS.get(stack.getItem());
+            if (id != null) {
+                BakedModelManager manager = models.getModelManager();
+                BakedModel heldModel = manager.getModel(id);
+                modelRef.set(
+                    heldModel == null ?
+                        manager.getMissingModel() :
+                        heldModel.getOverrides().apply(heldModel, stack, null, null, renderMode.ordinal())
+                );
+            }
         }
     }
 }
