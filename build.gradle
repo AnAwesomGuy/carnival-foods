@@ -107,7 +107,7 @@ publishMods {
 	type = STABLE
 	changelog = file("CHANGELOG.md").text
 	modLoaders.add 'fabric'
-	displayName = display_name
+	displayName = display_name + mod_version
 
 	modrinth {
 		projectId = modrinth_id
