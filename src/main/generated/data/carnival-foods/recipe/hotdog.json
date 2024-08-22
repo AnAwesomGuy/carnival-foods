@@ -3,14 +3,11 @@
   "category": "misc",
   "ingredients": [
     {
-      "tag": "minecraft:swords"
-    },
-    {
       "item": "minecraft:cooked_porkchop"
     }
   ],
   "result": {
-    "count": 1,
+    "count": 2,
     "id": "carnival-foods:hotdog"
   }
 }

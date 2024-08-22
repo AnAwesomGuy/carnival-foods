@@ -48,8 +48,10 @@ public class CottonCandyItem extends CottonCandyMachineUsable {
     public ItemStack finishUsing(ItemStack stack, World world, LivingEntity user) {
         stack = super.finishUsing(stack, world, user); // there is a mixin to LivingEntity#eatFood so this works properly
         if (stack.contains(DataComponentTypes.FOOD)) {
-            if (world instanceof ServerWorld)
+            if (world instanceof ServerWorld) {
                 stack = stack.damage(1, Items.STICK, user, LivingEntity.getSlotForHand(user.getActiveHand()));
+                stack.remove(DataComponentTypes.DYED_COLOR);
+            }
         } else
             stack.set(DataComponentTypes.FOOD, stack.getDefaultComponents().get(DataComponentTypes.FOOD));
         return stack;

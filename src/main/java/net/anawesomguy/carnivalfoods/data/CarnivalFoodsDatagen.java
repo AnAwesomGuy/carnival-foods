@@ -1,4 +1,4 @@
-package net.anawesomguy.carnivalfoods;
+package net.anawesomguy.carnivalfoods.data;
 
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
@@ -12,7 +12,6 @@ import net.minecraft.data.server.recipe.ShapelessRecipeJsonBuilder;
 import net.minecraft.item.Items;
 import net.minecraft.recipe.book.RecipeCategory;
 import net.minecraft.registry.RegistryWrapper.WrapperLookup;
-import net.minecraft.registry.tag.ItemTags;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -28,48 +27,46 @@ public final class CarnivalFoodsDatagen implements DataGeneratorEntrypoint {
     }
 
     private static final class RecipeGenerator extends FabricRecipeProvider {
-        private RecipeGenerator(FabricDataOutput output,
-                                CompletableFuture<WrapperLookup> registriesFuture) {
+        RecipeGenerator(FabricDataOutput output, CompletableFuture<WrapperLookup> registriesFuture) {
             super(output, registriesFuture);
         }
 
         @Override
         public void generate(RecipeExporter exporter) {
             ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, COTTON_CANDY_MACHINE_ITEM)
-                                   .input('#', Items.IRON_INGOT)
-                                   .input('@', Items.IRON_BARS)
                                    .pattern("#@#")
                                    .pattern("###")
+                                   .input('#', Items.IRON_INGOT)
+                                   .input('@', Items.IRON_BARS)
                                    .criterion("has_ingots", FabricRecipeProvider.conditionsFromItem(Items.IRON_INGOT))
                                    .criterion("has_bars", FabricRecipeProvider.conditionsFromItem(Items.IRON_BARS))
                                    .offerTo(exporter);
-            ShapelessRecipeJsonBuilder.create(RecipeCategory.FOOD, HOTDOG_BUN)
+            ShapelessRecipeJsonBuilder.create(RecipeCategory.FOOD, HOTDOG_BUN, 2)
                                       .input(BREAD)
                                       .criterion("has_bread", FabricRecipeProvider.conditionsFromItem(BREAD))
                                       .offerTo(exporter);
-            ShapelessRecipeJsonBuilder.create(RecipeCategory.FOOD, HOTDOG)
-                                      .input(ItemTags.SWORDS)
-                                      .criterion("has_porkchop",
-                                                 FabricRecipeProvider.conditionsFromItem(COOKED_PORKCHOP))
+            ShapelessRecipeJsonBuilder.create(RecipeCategory.FOOD, HOTDOG, 2)
+                                      .input(COOKED_PORKCHOP)
+                                      .criterion("has_porkchop", FabricRecipeProvider.conditionsFromItem(COOKED_PORKCHOP))
                                       .offerTo(exporter);
             ShapelessRecipeJsonBuilder.create(RecipeCategory.FOOD, HOTDOG_IN_BUN)
                                       .input(HOTDOG_BUN)
                                       .input(HOTDOG)
-                                      .criterion("has_buns", FabricRecipeProvider.conditionsFromItem(HOTDOG_BUN))
+                                      .criterion("has_bun", FabricRecipeProvider.conditionsFromItem(HOTDOG_BUN))
                                       .criterion("has_hotdog", FabricRecipeProvider.conditionsFromItem(HOTDOG))
                                       .offerTo(exporter);
             ShapelessRecipeJsonBuilder.create(RecipeCategory.FOOD, VEGAN_HOTDOG)
                                       .input(HOTDOG_BUN)
                                       .input(KELP)
-                                      .criterion("has_buns", FabricRecipeProvider.conditionsFromItem(HOTDOG_BUN))
+                                      .criterion("has_bun", FabricRecipeProvider.conditionsFromItem(HOTDOG_BUN))
                                       .criterion("has_kelp", FabricRecipeProvider.conditionsFromItem(KELP))
                                       .offerTo(exporter);
         }
     }
 
     private static final class LanguageProvider extends FabricLanguageProvider {
-        private LanguageProvider(FabricDataOutput dataOutput, CompletableFuture<WrapperLookup> registryLookup) {
-            super(dataOutput, "en_us", registryLookup);
+        LanguageProvider(FabricDataOutput dataOutput, CompletableFuture<WrapperLookup> registryLookup) {
+            super(dataOutput, registryLookup);
         }
 
         @Override

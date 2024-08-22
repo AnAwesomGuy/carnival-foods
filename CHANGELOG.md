@@ -1,1 +1,3 @@
-just some bugs idk what to put here
+fixed #1
+
+1.21.1 support

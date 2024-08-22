@@ -11,6 +11,7 @@ import net.minecraft.entity.projectile.ProjectileUtil;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.UseAction;
@@ -46,7 +47,7 @@ public abstract class CottonCandyMachineUsable extends Item {
                 blockHitResult.getType() == Type.BLOCK &&
                 world.getBlockEntity(blockHitResult.getBlockPos()) instanceof CottonCandyMachineBlockEntity machine &&
                 !(sugars = machine.getStack(16)).isEmpty()) {
-                int color = machine.getCraftedColor();
+                int color = machine.getCraftedColor(stack);
                 if (stack.isOf(CarnivalFoods.COTTON_CANDY)) {
                     stack.setDamage(stack.getDamage() - 1);
                     if (color != -1)
@@ -57,8 +58,8 @@ public abstract class CottonCandyMachineUsable extends Item {
                     stack.decrement(1);
                     if (stack.getCount() < 1)
                         player.setStackInHand(player.getActiveHand(), newStack);
-                    else
-                        player.getInventory().offerOrDrop(stack);
+                    else if (player instanceof ServerPlayerEntity)
+                        player.getInventory().offerOrDrop(newStack);
                 }
                 sugars.decrement(1);
             } else
@@ -68,8 +69,7 @@ public abstract class CottonCandyMachineUsable extends Item {
 
     @Override
     public ItemStack finishUsing(ItemStack stack, World world, LivingEntity user) {
-        stack = super.finishUsing(stack, world, user);
-        usageTick(world, user, stack, 0);
+        usageTick(world, user, (stack = super.finishUsing(stack, world, user)), 0);
         return stack;
     }
 

@@ -13,7 +13,6 @@ import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactories;
 import net.minecraft.client.world.ClientWorld;
@@ -50,13 +49,15 @@ public final class CarnivalFoodsClient implements ClientModInitializer {
         EntityModelLayerRegistry.registerModelLayer(CottonCandyMachineRenderer.LAYER_LOCATION,
                                                     CottonCandyMachineRenderer::createBodyLayer);
         BlockEntityRendererFactories.register(CottonCandyMachineBlockEntity.TYPE, CottonCandyMachineRenderer::new);
+        ModelLoadingPlugin.register(pluginContext -> pluginContext.addModels(HELD_ITEMS_PRIVATE.values()));
+
         ColorProviderRegistry.ITEM.register((stack, tintIndex) -> {
             DyedColorComponent color;
             if (tintIndex == 1 && (color = stack.get(DataComponentTypes.DYED_COLOR)) != null)
                 return ColorHelper.Argb.fullAlpha(color.rgb());
             return -1;
         }, CarnivalFoods.COTTON_CANDY);
-        ModelLoadingPlugin.register(pluginContext -> pluginContext.addModels(HELD_ITEMS_PRIVATE.values()));
+
         BuiltinItemRendererRegistry.INSTANCE.register(
             CarnivalFoods.COTTON_CANDY_MACHINE_ITEM,
             (stack, mode, matrices, vertexConsumers, light, overlay) -> {
@@ -67,6 +68,7 @@ public final class CarnivalFoodsClient implements ClientModInitializer {
                 }
             }
         );
+
         RenderCrosshairCallback.EVENT.register((context, tickCounter) -> {
             MinecraftClient client = MinecraftClient.getInstance();
             ClientWorld world;
@@ -76,10 +78,30 @@ public final class CarnivalFoodsClient implements ClientModInitializer {
                 world.getBlockEntity(blockHit.getBlockPos()) instanceof CottonCandyMachineBlockEntity machine) {
                 int width = context.getScaledWindowWidth(), height = context.getScaledWindowHeight();
                 TextRenderer textRenderer = client.textRenderer;
-                drawStack(context, textRenderer, machine.getStack(16), (width - 47) / 2,
-                          (height - 16) / 2); // stack is checked for empty in the method
+                // draw the stack
+                ItemStack stack = machine.getStack(16);
+                if (!stack.isEmpty()) {
+                    context.getMatrices().push();
+                    context.drawItem(stack, (width - 47) / 2, (height - 16) / 2);
+
+                    if (stack.getCount() != 1) {
+                        String string = Integer.toString(stack.getCount());
+                        context.getMatrices().translate(0.0F, 0.0F, 200.0F);
+                        context.drawText(textRenderer, string, (width - 47) / 2 + 17 - textRenderer.getWidth(string), (height - 16) / 2 + 9, 16777215, true);
+                    }
+
+                    if (stack.isItemBarVisible()) {
+                        int barX = (width - 47) / 2 + 2;
+                        int barY = (height - 16) / 2 + 13;
+                        context.fill(RenderLayer.getGuiOverlay(), barX, barY, barX + 13, barY + 2, Colors.BLACK);
+                        context.fill(RenderLayer.getGuiOverlay(), barX, barY, barX + stack.getItemBarStep(),
+                                     barY + 1, stack.getItemBarColor() | Colors.BLACK);
+                    }
+
+                    context.getMatrices().pop();
+                }
                 // draw crafted color text
-                int color = machine.getCraftedColor(); // should be opaque
+                int color = machine.getCraftedColor(null); // should be opaque
                 if (color != -1) {
                     Text text = Text.translatable("message.carnival-foods.color");
                     int textWidth = textRenderer.getWidth(text) / 2;
@@ -92,29 +114,6 @@ public final class CarnivalFoodsClient implements ClientModInitializer {
                 }
             }
         });
-    }
-
-    private static void drawStack(DrawContext context, TextRenderer textRenderer, ItemStack stack, int x, int y) {
-        if (!stack.isEmpty()) {
-            context.drawItem(stack, x, y);
-            context.getMatrices().push();
-
-            if (stack.getCount() != 1) {
-                String string = String.valueOf(stack.getCount());
-                context.getMatrices().translate(0.0F, 0.0F, 200.0F);
-                context.drawText(textRenderer, string, x + 17 - textRenderer.getWidth(string), y + 9, 16777215, true);
-            }
-
-            if (stack.isItemBarVisible()) {
-                int barX = x + 2;
-                int barY = y + 13;
-                context.fill(RenderLayer.getGuiOverlay(), barX, barY, barX + 13, barY + 2, Colors.BLACK);
-                context.fill(RenderLayer.getGuiOverlay(), barX, barY, barX + stack.getItemBarStep(),
-                             barY + 1, stack.getItemBarColor() | Colors.BLACK);
-            }
-
-            context.getMatrices().pop();
-        }
     }
 
     static {

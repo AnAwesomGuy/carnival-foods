@@ -12,17 +12,8 @@ import org.spongepowered.asm.mixin.injection.Slice;
 public abstract class ItemsMixin {
     @Redirect(
         method = "<clinit>",
-        at = @At(
-            value = "NEW",
-            target = "(Lnet/minecraft/item/Item$Settings;)Lnet/minecraft/item/Item;",
-            ordinal = 0
-        ),
-        slice = @Slice(
-            from = @At(
-                value = "CONSTANT",
-                args = "stringValue=stick"
-            )
-        )
+        at = @At(value = "NEW", target = "net/minecraft/item/Item", ordinal = 0),
+        slice = @Slice(from = @At(value = "CONSTANT", args = "stringValue=stick"))
     )
     private static Item replaceStick(Item.Settings settings) {
         return new ModifiedStickItem(settings);

@@ -1,71 +1,78 @@
 plugins {
-	id 'fabric-loom' version '1.7-SNAPSHOT'
-	id 'me.modmuss50.mod-publish-plugin' version '0.5.2'
+    id 'fabric-loom' version '1.7-SNAPSHOT'
+    id 'me.modmuss50.mod-publish-plugin' version '0.6.3'
 }
 
 version = project.mod_version
 group = project.maven_group
 
 base {
-	archivesName = project.mod_id
+    archivesName = project.mod_id
 }
 
 repositories {
-	// Add repositories to retrieve artifacts from in here.
+    // Add repositories to retrieve artifacts from in here.
 }
 
 fabricApi {
-	configureDataGeneration()
+    configureDataGeneration()
 }
 
 dependencies {
-	// To change the versions see the gradle.properties file
-	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
-	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
-	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-	
+    // To change the versions see the gradle.properties file
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+
 }
+
+sourceSets.main.resources.exclude "src/main/generated/.cache/*"
 
 import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
 
 processResources {
-	def properties = [
-			version: mod_version, github_repo: 'http://github.com/' + github,
-			display_name: display_name, modrinth_id: modrinth_id, curseforge_id: curseforge_id
-	]
+    def properties = [
+            version     : mod_version, github_repo: 'http://github.com/' + github,
+            display_name: display_name, modrinth_id: modrinth_id, curseforge_id: curseforge_id
+    ]
 
-	inputs.properties properties
+    inputs.properties properties
 
-	filesMatching("fabric.mod.json") {
-		expand properties
-	}
+    filesMatching("fabric.mod.json") {
+        expand properties
+    }
 
-	doLast {
-		fileTree(dir: outputs.files.asPath).each {
-			if (it.name.endsWith(".json")) {
-				def parsed = new JsonSlurper().parse(it)
-				parsed.remove "credit"
-				it.text = JsonOutput.toJson(parsed)
-			}
-		}
-	}
+    doLast {
+        filesMatching("**/*.json") {
+            def file = it.file
+            def parsed = new JsonSlurper().parse file
+            parsed.remove "credit"
+            file.text = JsonOutput.toJson parsed
+        }
+    }
 }
 
 tasks.withType(JavaCompile).configureEach {
-	it.options.release = 21
+    it.options.release = 21
 }
 
 java {
-	withSourcesJar()
-
-	sourceCompatibility = JavaVersion.VERSION_21
-	targetCompatibility = JavaVersion.VERSION_21
+    withSourcesJar()
+    sourceCompatibility = targetCompatibility = JavaVersion.VERSION_21
 }
 
 jar {
-	from "LICENSE"
+    from "LICENSE"
+    exclude "net/anawesomguy/carnivalfoods/data/**"
+
+    filesMatching("fabric.mod.json") {
+        def file = it.file
+        def parsed = new JsonSlurper().parse file
+        parsed.entrypoints.remove("fabric-datagen")
+        file.text = JsonOutput.toJson parsed
+    }
 }
 
 loom {
@@ -78,51 +85,85 @@ loom {
 //		}
 //	}
 
+//	accessWidenerPath = file("src/main/resources/${mod_id}.accesswidener")
     mixin.useLegacyMixinAp = false
 
-	runs {
-		clientMixinDebug {
-			client()
-			ideConfigGenerated true
-			name = "Client Mixin Debug"
-			source sourceSets.main
-			property 'mixin.debug', 'true'
-		}
+    runs {
+        clientMixinDebug {
+            client()
+            ideConfigGenerated true
+            name = "Client Mixin Debug"
+            source sourceSets.main
+            property 'mixin.debug', 'true'
+        }
 
-		serverMixinDebug {
-			server()
-			ideConfigGenerated true
-			name = "Server Mixin Debug"
-			source sourceSets.main
-			property 'mixin.debug', 'true'
-		}
-	}
-
-//	accessWidenerPath = file("src/main/resources/${mod_id}.accesswidener")
+        serverMixinDebug {
+            server()
+            ideConfigGenerated true
+            name = "Server Mixin Debug"
+            source sourceSets.main
+            property 'mixin.debug', 'true'
+        }
+    }
 }
 
+/*
+static traverseAndRemoveUnnecessaryTop(Map<String, ?> obj, FileCopyDetails f) {
+    if (f.sourcePath.matches(/data\/[0-9a-zA-Z_-]\/recipes/))
+        if (obj?.result?.count == 1)
+            obj.result.remove "count"
+
+    traverseAndRemoveUnnecessary obj
+}
+
+static traverseAndRemoveUnnecessary(Map<String, ?> obj) {
+    obj.each {e -> {
+        def v = e.value
+        if (v instanceof Map<String, ?>)
+            traverseAndRemoveUnnecessary v
+        else if (v instanceof List<?>)
+            traverseAndRemoveUnnecessary v
+        else if (v instanceof String)
+            if (v.startsWith("minecraft:"))
+                e.value = v.substring 10
+    }}
+}
+
+static traverseAndRemoveUnnecessary(List<?> a) {
+    a.eachWithIndex {(v, i) -> {
+        if (v instanceof Map<String, ?>)
+            traverseAndRemoveUnnecessary v
+        else if (v instanceof List<?>)
+            traverseAndRemoveUnnecessary v
+        else if (v instanceof String)
+            if (v.startsWith("minecraft:"))
+                a[i] = v.substring(10)
+    }}
+}
+ */
+
 publishMods {
-	file = remapJar.archiveFile
-	additionalFiles.from remapSourcesJar.archiveFile
-	type = STABLE
-	changelog = file("CHANGELOG.md").text
-	modLoaders.add 'fabric'
-	displayName = display_name + mod_version
+    file = remapJar.archiveFile
+    additionalFiles.from remapSourcesJar.archiveFile
+    type = STABLE
+    changelog = file("CHANGELOG.md").text
+    modLoaders.add 'fabric'
+    displayName = display_name + mod_version
 
-	modrinth {
-		projectId = modrinth_id
-		accessToken = providers.environmentVariable 'MODRINTH_TOKEN'
-		minecraftVersions.add minecraft_version
+    modrinth {
+        projectId = modrinth_id
+        accessToken = providers.environmentVariable 'MODRINTH_TOKEN'
+        minecraftVersions.add minecraft_version
 
-		requires {
-			slug = 'fabric-api'
-		}
-	}
+        requires {
+            slug = 'fabric-api'
+        }
+    }
 
     github {
-		accessToken = providers.environmentVariable 'GITHUB_TOKEN'
-		repository = github
-		tagName = mod_version
-		commitish = 'master'
-	}
+        accessToken = providers.environmentVariable 'GITHUB_TOKEN'
+        repository = github
+        tagName = mod_version
+        commitish = 'master'
+    }
 }
