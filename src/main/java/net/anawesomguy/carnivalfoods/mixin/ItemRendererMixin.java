@@ -36,7 +36,7 @@ public abstract class ItemRendererMixin {
                 modelRef.set(
                     heldModel == null ?
                         manager.getMissingModel() :
-                        heldModel.getOverrides().apply(heldModel, stack, null, null, renderMode.ordinal())
+                        heldModel.getOverrides().apply(heldModel, stack, null, null, 0)
                 );
             }
         }

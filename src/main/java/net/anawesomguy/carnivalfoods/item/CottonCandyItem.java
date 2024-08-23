@@ -1,11 +1,13 @@
 package net.anawesomguy.carnivalfoods.item;
 
 import net.anawesomguy.carnivalfoods.block.CottonCandyMachineBlock;
+import net.anawesomguy.carnivalfoods.mixin.ItemStackAccessor;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.item.Items;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.UseAction;
@@ -49,8 +51,13 @@ public class CottonCandyItem extends CottonCandyMachineUsable {
         stack = super.finishUsing(stack, world, user); // there is a mixin to LivingEntity#eatFood so this works properly
         if (stack.contains(DataComponentTypes.FOOD)) {
             if (world instanceof ServerWorld) {
-                stack = stack.damage(1, Items.STICK, user, LivingEntity.getSlotForHand(user.getActiveHand()));
-                stack.remove(DataComponentTypes.DYED_COLOR);
+                stack.damage(1, (ServerWorld)world,
+                             user instanceof ServerPlayerEntity ? (ServerPlayerEntity)user : null, item -> {});
+                if (stack.isEmpty()) {
+                    stack.remove(DataComponentTypes.DYED_COLOR);
+                    stack.remove(DataComponentTypes.DAMAGE);
+                    stack = ((ItemStackAccessor)(Object)stack).copyComponentsIgnoreEmpty(Items.STICK, 1);
+                }
             }
         } else
             stack.set(DataComponentTypes.FOOD, stack.getDefaultComponents().get(DataComponentTypes.FOOD));

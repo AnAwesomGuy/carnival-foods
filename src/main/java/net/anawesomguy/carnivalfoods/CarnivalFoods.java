@@ -24,7 +24,7 @@ public final class CarnivalFoods implements ModInitializer {
 
     public static final FoodComponent
         COTTON_CANDY_FOOD = new Builder().statusEffect(new StatusEffectInstance(StatusEffects.REGENERATION, 65), 0.5F)
-                                         .statusEffect(new StatusEffectInstance(StatusEffects.SPEED, 100, 2), 0.75F)
+                                         .statusEffect(new StatusEffectInstance(StatusEffects.SPEED, 100, 1), 0.75F)
                                          .nutrition(1)
                                          .saturationModifier(0.2F)
                                          .alwaysEdible()

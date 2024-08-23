@@ -2,10 +2,7 @@
   "required": true,
   "package": "net.anawesomguy.carnivalfoods.mixin",
   "compatibilityLevel": "JAVA_21",
-  "mixins": [
-    "ItemsMixin",
-    "LivingEntityMixin"
-  ],
+  "mixins": ["ItemsMixin", "ItemStackAccessor", "LivingEntityMixin"],
   "injectors": {
     "defaultRequire": 1
   },

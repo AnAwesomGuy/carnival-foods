@@ -58,7 +58,7 @@ public class CottonCandyMachineBlockEntity extends BlockEntity implements BasicI
     @Override
     public boolean isValid(int slot, ItemStack stack) {
         Item item = stack.getItem();
-        return item instanceof DyeItem || (item == Items.SUGAR && slot == 16);
+        return slot == 16 ? item == Items.SUGAR : item instanceof DyeItem;
     }
 
     @Override
@@ -104,9 +104,10 @@ public class CottonCandyMachineBlockEntity extends BlockEntity implements BasicI
         if (stack != null && !stack.isEmpty()) {
             DyedColorComponent dyedColorComponent = stack.get(DataComponentTypes.DYED_COLOR);
             if (dyedColorComponent != null) {
-                int red = Argb.getRed(dyedColorComponent.rgb());
-                int green = Argb.getGreen(dyedColorComponent.rgb());
-                int blue = Argb.getBlue(dyedColorComponent.rgb());
+                int color = dyedColorComponent.rgb();
+                int red = Argb.getRed(color);
+                int green = Argb.getGreen(color);
+                int blue = Argb.getBlue(color);
                 i += NumberUtils.max(red, green, blue);
                 reds += red;
                 greens += green;

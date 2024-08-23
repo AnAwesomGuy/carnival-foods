@@ -32,9 +32,11 @@ public class CottonCandyMachineRenderer implements BlockEntityRenderer<CottonCan
     @SuppressWarnings("deprecation") // BLOCK_ATLAS_TEXTURE
     public static final SpriteIdentifier TEXTURE =
         new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, CarnivalFoods.id("entity/cotton_candy_machine"));
+    protected static final float SPIN_START = PI / -7.9F;
 
-    private final ModelPart base;
-    private final ModelPart spinning;
+    protected final ModelPart base;
+    protected final ModelPart spinning;
+    protected float spin;
 
     public CottonCandyMachineRenderer(BlockEntityRendererFactory.Context ctx) {
         ModelPart part = ctx.getLayerModelPart(LAYER_LOCATION);
@@ -78,7 +80,7 @@ public class CottonCandyMachineRenderer implements BlockEntityRenderer<CottonCan
         base.addChild("innerSW", inner3, ModelTransform.rotation(-1.0601F, -1.2728F, 1.0791F));
 
         data.addChild("spinning", create().uv(8, 0).cuboid(-1F, 1.3F, -0.5F, 2F, 4F, 1F),
-                      ModelTransform.of(8, 0, 8, 0F, PI / -7.9F, 0F));
+                      ModelTransform.of(8, 0, 8, 0F, SPIN_START, 0F));
 
         return TexturedModelData.of(modelData, 32, 32);
     }
@@ -86,8 +88,9 @@ public class CottonCandyMachineRenderer implements BlockEntityRenderer<CottonCan
     @Override
     public void render(CottonCandyMachineBlockEntity entity, float tickDelta, MatrixStack matrices,
                        VertexConsumerProvider vertexConsumers, int light, int overlay) {
-        spinning.yaw = (spinning.yaw + tickDelta * 0.9F) % PI;
+        spinning.yaw = spin = (spinning.yaw + tickDelta * 0.9F) % PI;
         renderStationary(matrices, vertexConsumers, light, overlay);
+        spinning.yaw = SPIN_START;
     }
 
     public void renderStationary(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
