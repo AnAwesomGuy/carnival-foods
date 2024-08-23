@@ -68,7 +68,10 @@ public interface BasicInventory extends Inventory {
 
     @Override
     default ItemStack removeStack(int slot) {
-        return Inventories.removeStack(getItems(), slot);
+        ItemStack result = Inventories.removeStack(getItems(), slot);
+        if (!result.isEmpty())
+            markDirty();
+        return result;
     }
 
     /**
@@ -81,13 +84,14 @@ public interface BasicInventory extends Inventory {
     @Override
     default void setStack(int slot, ItemStack stack) {
         getItems().set(slot, stack);
-        if (stack.getCount() > stack.getMaxCount())
-            stack.setCount(stack.getMaxCount());
+        stack.capCount(getMaxCount(stack));
+        markDirty();
     }
 
     @Override
     default void clear() {
         getItems().clear();
+        markDirty();
     }
 
     @Override

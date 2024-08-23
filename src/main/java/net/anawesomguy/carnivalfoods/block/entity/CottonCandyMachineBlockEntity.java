@@ -97,6 +97,10 @@ public class CottonCandyMachineBlockEntity extends BlockEntity implements BasicI
         return createNbt(lookup);
     }
 
+    /**
+     * @param stack the stack used on the machine
+     * @return the color that using this machine would result in
+     */
     // adapted from DyedColorComponent
     public int getCraftedColor(@Nullable ItemStack stack) {
         int reds = 0, greens = 0, blues = 0, i = 0, count = 0;
